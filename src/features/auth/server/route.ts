@@ -5,8 +5,14 @@ import { LoginSchema, RegisterSchema } from "../schemas";
 import { createAdminClient } from "@/lib/appwrite";
 import { ID } from "node-appwrite";
 import { AUTH_COOKIE } from "../constants";
+import { sessionMiddleware } from "@/lib/session-middleware";
 
 const app = new Hono()
+  .get("/current", sessionMiddleware, async (c) => {
+    const user = c.get("user");
+
+    return c.json({ data: user });
+  })
   .post("/login", zValidator("json", LoginSchema), async (c) => {
     const { email, password } = c.req.valid("json");
 
@@ -27,6 +33,7 @@ const app = new Hono()
     const { name, email, password } = c.req.valid("json");
 
     const { account } = await createAdminClient();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const user = await account.create(ID.unique(), email, password, name);
 
     const session = await account.createEmailPasswordSession(email, password);
@@ -41,8 +48,11 @@ const app = new Hono()
 
     return c.json({ success: true });
   })
-  .post("/logout", (c) => {
+  .post("/logout", sessionMiddleware, async (c) => {
+    const account = c.get("account");
+
     deleteCookie(c, AUTH_COOKIE);
+    await account.deleteSession("current");
 
     return c.json({ success: true });
   });
