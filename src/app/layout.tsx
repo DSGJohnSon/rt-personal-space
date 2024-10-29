@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { QueryProvider } from "@/components/query-provider";
 
 const font = Manrope({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(font.className, "antialiased min-h-screen")}>
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
