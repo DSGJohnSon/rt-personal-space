@@ -3,6 +3,7 @@ import { Manrope } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/components/query-provider";
+import { Toaster } from "sonner";
 
 const font = Manrope({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(font.className, "antialiased min-h-screen")}>
+        <Toaster />
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
