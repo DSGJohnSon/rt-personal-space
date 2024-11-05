@@ -1,3 +1,5 @@
+"use client";
+
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { DottedSeparator } from "@/components/dotted-separator";
@@ -17,9 +19,10 @@ import {
 import Link from "next/link";
 import { LoginSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
+import { Loader } from "lucide-react";
 
 export const SignInCard = () => {
-  const { mutate } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -79,9 +82,16 @@ export const SignInCard = () => {
             <Button
               variant={"primary"}
               size={"lg"}
-              disabled={false}
+              disabled={isPending}
               className="w-full">
-              Login
+              {isPending ? (
+                <>
+                  <Loader className="mr-2 size-5 animate-spin" />
+                  Please wait...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
         </Form>
@@ -93,7 +103,7 @@ export const SignInCard = () => {
         <Button
           variant={"secondary"}
           size={"lg"}
-          disabled={false}
+          disabled={isPending}
           className="w-full">
           <FcGoogle className="mr-2 size-5" />
           Login with Google
@@ -101,7 +111,7 @@ export const SignInCard = () => {
         <Button
           variant={"secondary"}
           size={"lg"}
-          disabled={false}
+          disabled={isPending}
           className="w-full">
           <FaGithub className="mr-2 size-5" />
           Login with Github

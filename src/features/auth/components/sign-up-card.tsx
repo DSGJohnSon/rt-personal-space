@@ -1,3 +1,5 @@
+"use client";
+
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { DottedSeparator } from "@/components/dotted-separator";
@@ -23,9 +25,10 @@ import {
 } from "@/components/ui/form";
 import { RegisterSchema } from "../schemas";
 import { useRegister } from "../api/use-register";
+import { Loader } from "lucide-react";
 
 export const SignUpCard = () => {
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -111,9 +114,16 @@ export const SignUpCard = () => {
             <Button
               variant={"primary"}
               size={"lg"}
-              disabled={false}
+              disabled={isPending}
               className="w-full">
-              Login
+              {isPending ? (
+                <>
+                  <Loader className="mr-2 size-5 animate-spin" />
+                  Please wait...
+                </>
+              ) : (
+                "Register"
+              )}
             </Button>
           </form>
         </Form>
@@ -125,7 +135,7 @@ export const SignUpCard = () => {
         <Button
           variant={"secondary"}
           size={"lg"}
-          disabled={false}
+          disabled={isPending}
           className="w-full">
           <FcGoogle className="mr-2 size-5" />
           Login with Google
@@ -133,7 +143,7 @@ export const SignUpCard = () => {
         <Button
           variant={"secondary"}
           size={"lg"}
-          disabled={false}
+          disabled={isPending}
           className="w-full">
           <FaGithub className="mr-2 size-5" />
           Login with Github
