@@ -48,7 +48,19 @@ export default function CreateWorkspaceForm({
   };
 
   const onSubmit = (values: z.infer<typeof createWorkspaceSchema>) => {
-    mutate({ json: values });
+    const finalValues = {
+      ...values,
+      image: values.image instanceof File ? values.image : "",
+    };
+    mutate(
+      { form: finalValues },
+      {
+        onSuccess: () => {
+          form.reset();
+          //TODO: Redirect to new workspace
+        },
+      }
+    );
   };
 
   return (
@@ -72,7 +84,7 @@ export default function CreateWorkspaceForm({
                   <FormItem>
                     <FormLabel>Workspace Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="enter Workspace Name" {...field} />
+                      <Input placeholder="Enter Workspace Name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
