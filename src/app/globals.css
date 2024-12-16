@@ -6,6 +6,30 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@font-face {
+  font-family: "axiforma";
+  src: url("./fonts/axiforma-regular-webfont.woff2") format("woff2"),
+    url("./fonts/axiforma-regular-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Marcellus";
+  src: url("./fonts/marcellus-regular-webfont.woff2") format("woff2"),
+    url("./fonts/marcellus-regular-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-axiforma {
+  font-family: "axiforma";
+}
+
+.font-marcellus {
+  font-family: "Marcellus";
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

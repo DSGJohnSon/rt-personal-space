@@ -34,8 +34,8 @@ export const SignInCard = () => {
   };
 
   return (
-    <div className="flex flex-col">
-      <h1 className="font-marcellus text-creme text-xl text-center mb-8">
+    <div className="flex flex-col w-full max-w-[480px]">
+      <h1 className="font-marcellus text-creme font-bold text-4xl text-center mb-8">
         Personal space
       </h1>
       <Form {...form}>
@@ -52,6 +52,7 @@ export const SignInCard = () => {
                       {...field}
                       type="email"
                       placeholder="mail@mail.com"
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -70,7 +71,8 @@ export const SignInCard = () => {
                     <Input
                       {...field}
                       type="password"
-                      placeholder="**********"
+                      placeholder="••••••••••"
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -94,10 +96,10 @@ export const SignInCard = () => {
           </Button>
         </form>
       </Form>
-      <p>
+      <p className="flex justify-between text-creme font-normal mt-8">
         Don&apos;t have an account ?
-        <Link href="/sign-up">
-          <span className="text-blue-700">&nbsp;Sign Up</span>
+        <Link href="/warranty">
+          <span className="text-brown underline">Sign Up</span>
         </Link>
       </p>
     </div>
