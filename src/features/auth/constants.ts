@@ -1,1 +1,1 @@
-export const AUTH_COOKIE = "cwa-jira-clone-session";
+export const AUTH_COOKIE = "cwa-rt-personal-space-session";
