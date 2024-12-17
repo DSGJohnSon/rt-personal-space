@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import "server-only";
 
 import { Client, Account, Storage, Users, Databases } from "node-appwrite";
