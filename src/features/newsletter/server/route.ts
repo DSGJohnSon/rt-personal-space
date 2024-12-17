@@ -10,6 +10,12 @@ const app = new Hono()
     c.res.headers.append("Access-Control-Allow-Headers", "Content-Type");
     await next();
   })
+  .options("*", (c) => {
+    c.res.headers.append("Access-Control-Allow-Origin", "*");
+    c.res.headers.append("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    c.res.headers.append("Access-Control-Allow-Headers", "Content-Type");
+    return c.text("");
+  })
   .post(
     "/add-email-to-hubspot",
     zValidator("json", NewsletterFormSchema),
