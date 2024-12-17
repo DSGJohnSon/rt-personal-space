@@ -7,17 +7,21 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.auth.register)["$post"]
+  (typeof client.api.auth)["register-admin"]["$post"]
 >;
-type RequestType = InferRequestType<(typeof client.api.auth.register)["$post"]>;
+type RequestType = InferRequestType<
+  (typeof client.api.auth)["register-admin"]["$post"]
+>;
 
-export const useRegister = () => {
+export const useRegisterAdmin = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
-      const response = await client.api.auth.register["$post"]({ json });
+      const response = await client.api.auth["register-admin"]["$post"]({
+        json,
+      });
 
       return await response.json();
     },
