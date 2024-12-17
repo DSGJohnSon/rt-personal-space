@@ -2,20 +2,17 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { NewsletterFormSchema } from "../schemas";
+import { cors } from "hono/cors";
 
 const app = new Hono()
-  .use("*", async (c, next) => {
-    c.res.headers.append("Access-Control-Allow-Origin", "*");
-    c.res.headers.append("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    c.res.headers.append("Access-Control-Allow-Headers", "Content-Type");
-    await next();
-  })
-  .options("*", (c) => {
-    c.res.headers.append("Access-Control-Allow-Origin", "*");
-    c.res.headers.append("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    c.res.headers.append("Access-Control-Allow-Headers", "Content-Type");
-    return c.text("");
-  })
+  .use(
+    "*",
+    cors({
+      origin: "*",
+      allowMethods: ["GET", "POST", "OPTIONS"],
+      allowHeaders: ["Content-Type"],
+    })
+  )
   .post(
     "/add-email-to-hubspot",
     zValidator("json", NewsletterFormSchema),
