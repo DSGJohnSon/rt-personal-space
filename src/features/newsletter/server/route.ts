@@ -7,7 +7,11 @@ const app = new Hono().post(
   "/add-email-to-hubspot",
   zValidator("json", NewsletterFormSchema),
   async (c) => {
-    const { email } = c.req.valid("json");
+    const { email, rtApiKey } = c.req.valid("json");
+
+    if (rtApiKey !== process.env.RT_API_KEY) {
+      return c.json({ success: false, error: "Invalid Renaud Tixier API key" });
+    }
 
     try {
       const response = await fetch(
