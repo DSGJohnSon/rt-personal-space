@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { getCurrent } from "@/features/auth/action";
-import { SignUpCard } from "@/features/auth/components/sign-up-card";
+import { RegisterWarrantyCard } from "@/features/auth/components/register-warranty-card";
 import { redirect } from "next/navigation";
 
 export default async function SignUpPage() {
@@ -15,7 +15,7 @@ export default async function SignUpPage() {
         "bg-dark",
         "w-screen h-screen"
       )}>
-      <SignUpCard />
+      <RegisterWarrantyCard />
     </div>
   );
 }

@@ -24,6 +24,7 @@ const buttonVariants = cva(
         muted: "bg-neutral-200 text-neutral-600 hover:bg-neutral-200/80",
         teritary:
           "bg-blue-100 text-blue-600 border-transparent hover:bg-blue-200 shadow-none",
+        blank: "bg-transparent",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -31,6 +32,7 @@ const buttonVariants = cva(
         xs: "h-7 px-2 text-xs",
         lg: "h-12 px-8",
         icon: "h-8 w-8",
+        blank: "",
       },
     },
     defaultVariants: {

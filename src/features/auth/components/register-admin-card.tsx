@@ -17,9 +17,8 @@ import { LoginSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
 import { Loader } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import TextSeparator from "@/components/text-separator";
 
-export const SignUpCard = () => {
+export const RegisterAdminCard = () => {
   const { mutate, isPending } = useLogin();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -37,11 +36,10 @@ export const SignUpCard = () => {
   return (
     <div className="flex flex-col w-full max-w-[480px]">
       <h1 className="font-marcellus text-creme font-bold text-4xl text-center mb-8">
-        Welcome to the family !
+        Personal space
       </h1>
-      <TextSeparator label="Personal informations" />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1">
             <Label className="text-creme">Email</Label>
             <FormField
@@ -62,7 +60,6 @@ export const SignUpCard = () => {
               )}
             />
           </div>
-          <TextSeparator label="Personal informations" />
           <div className="space-y-1">
             <Label className="text-creme">Password</Label>
             <FormField
@@ -87,8 +84,7 @@ export const SignUpCard = () => {
             variant={"primary"}
             size={"lg"}
             disabled={isPending}
-            className="w-full"
-          >
+            className="w-full">
             {isPending ? (
               <>
                 <Loader className="mr-2 size-5 animate-spin" />
@@ -102,8 +98,8 @@ export const SignUpCard = () => {
       </Form>
       <p className="flex justify-between text-creme font-normal mt-8">
         Don&apos;t have an account ?
-        <Link href="/sign-up">
-          <span className="text-brown underline">Sign In</span>
+        <Link href="/warranty">
+          <span className="text-brown underline">Sign Up</span>
         </Link>
       </p>
     </div>

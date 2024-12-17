@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Hono } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
 import { zValidator } from "@hono/zod-validator";
-import { LoginSchema, RegisterSchema } from "../schemas";
+import {
+  LoginSchema,
+  RegisterWarrantySchema,
+  RegisterAdminSchema,
+} from "../schemas";
 import { createAdminClient } from "@/lib/appwrite";
 import { ID } from "node-appwrite";
 import { AUTH_COOKIE } from "../constants";
@@ -29,25 +34,67 @@ const app = new Hono()
 
     return c.json({ success: true });
   })
-  .post("/register", zValidator("json", RegisterSchema), async (c) => {
-    const { name, email, password } = c.req.valid("json");
+  .post(
+    "/register-admin",
+    zValidator("json", RegisterAdminSchema),
+    async (c) => {
+      const { name, email, password } = c.req.valid("json");
 
-    const { account } = await createAdminClient();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const user = await account.create(ID.unique(), email, password, name);
+      const { account } = await createAdminClient();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const user = await account.create(ID.unique(), email, password, name);
 
-    const session = await account.createEmailPasswordSession(email, password);
+      const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(c, AUTH_COOKIE, session.secret, {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+      setCookie(c, AUTH_COOKIE, session.secret, {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
 
-    return c.json({ success: true });
-  })
+      return c.json({ success: true });
+    }
+  )
+  .post(
+    "/register-warranty",
+    zValidator("json", RegisterWarrantySchema),
+    async (c) => {
+      const {
+        civility,
+        firstname,
+        name,
+        email,
+        phoneIndex,
+        phone,
+        birthDate,
+        country,
+        password,
+        serial,
+        placeOfPurchase,
+        purchaseDate,
+        terms,
+        requestWarranty,
+      } = c.req.valid("json");
+
+      const { account } = await createAdminClient();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const user = await account.create(ID.unique(), email, password, name);
+
+      const session = await account.createEmailPasswordSession(email, password);
+
+      setCookie(c, AUTH_COOKIE, session.secret, {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+
+      return c.json({ success: true });
+    }
+  )
   .post("/logout", sessionMiddleware, async (c) => {
     const account = c.get("account");
 
