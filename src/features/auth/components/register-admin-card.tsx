@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -12,13 +12,14 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import Link from "next/link";
 import { RegisterAdminSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
 import { Loader } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { useEffect } from "react";
 import { redirect, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
+
+type RegisterAdminFormValues = z.infer<typeof RegisterAdminSchema>;
 
 export const RegisterAdminCard = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,16 +35,36 @@ export const RegisterAdminCard = () => {
     },
   });
 
+  const onSubmit = (values: z.infer<typeof RegisterAdminSchema>) => {
+    // mutate({ json: values });
+    console.log(values);
+  };
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RegisterAdminForm
+        form={form}
+        isPending={isPending}
+        onSubmit={onSubmit}
+      />
+    </Suspense>
+  );
+};
+
+const RegisterAdminForm = ({
+  form,
+  isPending,
+  onSubmit,
+}: {
+  form: UseFormReturn<RegisterAdminFormValues>;
+  isPending: boolean;
+  onSubmit: (values: z.infer<typeof RegisterAdminSchema>) => void;
+}) => {
   //récupérer le token contenu dans l'url sous la forme : url?token=token
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   if (!token) redirect("/");
   form.setValue("token", token);
-
-  const onSubmit = (values: z.infer<typeof RegisterAdminSchema>) => {
-    // mutate({ json: values });
-    console.log(values);
-  };
 
   return (
     <div className="flex flex-col w-full max-w-[480px]">
