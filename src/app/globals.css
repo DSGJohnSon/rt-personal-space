@@ -96,4 +96,21 @@ body {
   * {
     @apply border-border;
   }
+  body {
+    @apply bg-background text-foreground w-screen overflow-y-hidden;
+  }
+  /* All Scroll Bar Design */
+  ::-webkit-scrollbar {
+    @apply bg-dark w-[5px] h-[5px] fixed;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-brown;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-[#965a42]/50;
+  }
+}
+
+.rdp-vhidden {
+  @apply hidden;
 }

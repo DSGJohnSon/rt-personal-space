@@ -12,13 +12,12 @@ import {
   FormItem,
   FormMessage,
   FormLabel,
+  FormDescription,
 } from "@/components/ui/form";
 import Link from "next/link";
-import { LoginSchema, RegisterWarrantySchema } from "../schemas";
-import { useLogin } from "../api/use-login";
-import { CalendarIcon, Check, Loader } from "lucide-react";
+import { RegisterWarrantySchema } from "../schemas";
+import { CalendarIcon, Check, Loader, LucideHelpCircle } from "lucide-react";
 import TextSeparator from "@/components/text-separator";
-import { toast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -44,19 +43,31 @@ import { useState } from "react";
 import { countries } from "@/data/data";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import Image from "next/image";
+import { CaretSortIcon } from "@radix-ui/react-icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import HowToFindSerial from "./other/how-to-find-serial";
+import { useRegisterWarranty } from "../api/use-register-warranty";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const RegisterWarrantyCard = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { mutate, isPending } = useLogin();
+  const { mutate, isPending } = useRegisterWarranty();
 
   const form = useForm<z.infer<typeof RegisterWarrantySchema>>({
-    resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(RegisterWarrantySchema),
     defaultValues: {
       civility: "mr",
       firstname: "",
       name: "",
       email: "",
-      phoneIndex: "+33",
+      phoneIndex: "+41",
       phone: "",
       birthDate: undefined,
       country: "",
@@ -71,30 +82,19 @@ export const RegisterWarrantyCard = () => {
 
   const [popoverPhoneIndexOpen, setPopoverPhoneIndexOpen] = useState(false);
 
-  // const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-  //   mutate({ json: values });
-  // };
-
-  function onSubmit(data: z.infer<typeof RegisterWarrantySchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const onSubmit = (values: z.infer<typeof RegisterWarrantySchema>) => {
+    mutate({ json: values });
+  };
 
   return (
-    <div className="flex flex-col w-full max-w-[600px]">
+    <div className="flex flex-col w-full max-w-[600px] py-32">
       <h1 className="font-marcellus text-creme font-bold text-4xl text-center mb-8">
         Welcome to the family !
       </h1>
-      <TextSeparator label="Personal informations" />
+      <TextSeparator label="Personal informations" className="py-4" />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex items-center gap-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <div className="flex items-center gap-4">
             <div className="space-y-1 w-full">
               <FormLabel className="text-creme">Civility</FormLabel>
               <FormField
@@ -161,7 +161,7 @@ export const RegisterWarrantyCard = () => {
               />
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <div className="space-y-1 w-full">
               <FormLabel className="text-creme">Email adress</FormLabel>
               <FormField
@@ -211,12 +211,15 @@ export const RegisterWarrantyCard = () => {
                                 onClick={() => {
                                   setPopoverPhoneIndexOpen(true);
                                 }}>
-                                {field.value
-                                  ? countries.find(
-                                      (phoneIndex) =>
-                                        phoneIndex.dial_code === field.value
-                                    )?.dial_code
-                                  : "Select your country code"}
+                                <span>
+                                  {field.value
+                                    ? countries.find(
+                                        (phoneIndex) =>
+                                          phoneIndex.dial_code === field.value
+                                      )?.dial_code
+                                    : "Select your country code"}
+                                </span>
+                                <CaretSortIcon className="text-brown" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -226,10 +229,10 @@ export const RegisterWarrantyCard = () => {
                               <CommandList>
                                 <CommandEmpty>No indexes found.</CommandEmpty>
                                 <CommandGroup>
-                                  {countries.map((phoneIndex) => (
+                                  {countries.map((phoneIndex, index) => (
                                     <CommandItem
-                                      value={phoneIndex.dial_code}
-                                      key={phoneIndex.dial_code}
+                                      value={phoneIndex.name}
+                                      key={phoneIndex.dial_code + index}
                                       onSelect={() => {
                                         form.setValue(
                                           "phoneIndex",
@@ -237,6 +240,16 @@ export const RegisterWarrantyCard = () => {
                                         );
                                         setPopoverPhoneIndexOpen(false);
                                       }}>
+                                      <Image
+                                        src={`https://flagcdn.com/${phoneIndex.code.toLowerCase()}.svg`}
+                                        width={0}
+                                        height={0}
+                                        alt={`${phoneIndex.name} flag`}
+                                        style={{
+                                          width: "20px",
+                                          height: "auto",
+                                        }}
+                                      />
                                       <span>({phoneIndex.dial_code})</span>
                                       {phoneIndex.name}
                                       <Check
@@ -287,73 +300,96 @@ export const RegisterWarrantyCard = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="space-y-1 w-full">
-              <FormLabel className="text-creme">Email adress</FormLabel>
-              <FormField
-                name="email"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="john@doe.fr"
-                        disabled={isPending}
+          <div className="space-y-1 w-full">
+            <FormLabel htmlFor="birthDate" className="text-creme">
+              Date of birth
+            </FormLabel>
+            <FormField
+              control={form.control}
+              name="birthDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"input"}
+                          className={cn(
+                            "pl-3 text-left font-normal",
+                            !field.value && "text-creme/30"
+                          )}>
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 text-brown" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        autoFocus
+                        startMonth={new Date(1900, 1)}
+                        endMonth={new Date(2025, 2)}
                       />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="space-y-1 w-full">
-              <FormLabel htmlFor="birthDate" className="text-creme">
-                Date of birth
-              </FormLabel>
-              <FormField
-                control={form.control}
-                name="birthDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[240px] pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}>
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          initialFocus
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          fromYear={1900}
-                          toYear={new Date().getFullYear()}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-
-          <TextSeparator label="Personal informations" />
+          <div className="space-y-1 w-full">
+            <FormLabel htmlFor="placeOfPurchase" className="text-creme">
+              Living Country
+            </FormLabel>
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder="Select your country"
+                            className={"placeholder:text-red-600"}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {countries.map((country) => (
+                          <SelectItem value={country.name} key={country.code}>
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                                width={0}
+                                height={0}
+                                alt={`${country.name} flag`}
+                                style={{
+                                  width: "20px",
+                                  height: "auto",
+                                }}
+                              />
+                              {country.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="space-y-1">
             <FormLabel className="text-creme">Password</FormLabel>
             <FormField
@@ -374,20 +410,208 @@ export const RegisterWarrantyCard = () => {
               )}
             />
           </div>
-          <Button
-            variant={"primary"}
-            size={"lg"}
-            disabled={isPending}
-            className="w-full">
-            {isPending ? (
-              <>
-                <Loader className="mr-2 size-5 animate-spin" />
-                Please wait...
-              </>
-            ) : (
-              "Sign In"
-            )}
-          </Button>
+          <TextSeparator label="About your watch" className="py-4" />
+          <div className="space-y-1 w-full">
+            <div className="flex items-center gap-2 w-full justify-between">
+              <FormLabel className="text-creme">Serial Number</FormLabel>
+              <Dialog>
+                <DialogTrigger className="flex items-center gap-2 text-creme/30 text-xs hover:underline">
+                  <span>How to find my serial ?</span>
+                  <LucideHelpCircle size={14} className="mb-0.5" />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="font-normal">
+                      How to find my serial number ?
+                    </DialogTitle>
+                    <DialogDescription>
+                      <HowToFindSerial />
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <FormField
+              name="serial"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="XXXXX"
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-1 w-full">
+            <FormLabel htmlFor="placeOfPurchase" className="text-creme">
+              Place of Purchase
+            </FormLabel>
+            <FormField
+              control={form.control}
+              name="placeOfPurchase"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder="Select your country"
+                            className={"placeholder:text-red-600"}
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {countries.slice(0, 10).map((country) => (
+                          <SelectItem value={country.name} key={country.code}>
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
+                                width="20"
+                                height="20"
+                                alt={`${country.name} flag`}
+                              />
+                              {country.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-1 w-full">
+            <FormLabel htmlFor="purchaseDate" className="text-creme">
+              Date of purchase
+            </FormLabel>
+            <FormField
+              control={form.control}
+              name="purchaseDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"input"}
+                          className={cn(
+                            "pl-3 text-left font-normal",
+                            !field.value && "text-creme/30"
+                          )}>
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 text-brown" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        autoFocus
+                        startMonth={new Date(2024, 1)}
+                        endMonth={new Date()}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-1 w-full pt-2">
+            <FormField
+              control={form.control}
+              name="terms"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div>
+                    <FormLabel htmlFor="purchaseDate" className="text-creme">
+                      Terms & Conditions
+                    </FormLabel>
+                    <FormDescription className="text-xs font-normal text-creme/80">
+                      By checking this box, I hereby consent to the{" "}
+                      <Link href="/examples/forms" className="underline">
+                        Terms and Conditions
+                      </Link>{" "}
+                      and authorize RENAUD TIXIER to send me engaging
+                      information, exclusive updates, and notifications
+                      regarding new releases.
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-1 w-full pt-2">
+            <FormField
+              control={form.control}
+              name="requestWarranty"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div>
+                    <FormLabel htmlFor="purchaseDate" className="text-creme">
+                      Request Warranty
+                    </FormLabel>
+                    <FormDescription className="text-xs font-normal text-creme/80">
+                      By checking this box, I request an additional three years
+                      of warranty to complement the two years I currently have,
+                      ensuring comprehensive coverage as specified in the{" "}
+                      <Link href="/examples/forms" className="underline">
+                        Warranty Conditions
+                      </Link>
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <Button
+              variant={"primary"}
+              size={"lg"}
+              disabled={isPending}
+              className="w-full mt-4"
+              type="submit">
+              {isPending ? (
+                <>
+                  <Loader className="mr-2 size-5 animate-spin" />
+                  Please wait...
+                </>
+              ) : (
+                "Sign In"
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
       <p className="flex justify-between text-creme font-normal mt-8">

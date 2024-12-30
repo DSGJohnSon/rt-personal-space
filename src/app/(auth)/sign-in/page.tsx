@@ -7,10 +7,12 @@ import { redirect } from "next/navigation";
 
 export default async function SignInPage() {
   const user = await getCurrent();
-
-  console.log(user);
-
-  if (user) redirect("/");
+  if (user && user.labels.includes("admin")) {
+    redirect("/admin");
+  }
+  if (user) {
+    redirect("/");
+  }
 
   return (
     <div

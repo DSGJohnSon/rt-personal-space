@@ -1,9 +1,11 @@
 import { cn } from "@/lib/utils";
-import { getCurrent } from "@/features/auth/action";
-import { RegisterWarrantyCard } from "@/features/auth/components/register-warranty-card";
-import { redirect } from "next/navigation";
 
-export default async function SignUpPage() {
+import { getCurrent } from "@/features/auth/action";
+
+import { redirect } from "next/navigation";
+import { RegisterAdminCard } from "@/features/auth/components/register-admin-card";
+
+export default async function AdminSignUpPage() {
   const user = await getCurrent();
   if (user && user.labels.includes("admin")) {
     redirect("/admin");
@@ -15,11 +17,11 @@ export default async function SignUpPage() {
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center",
+        "flex items-center justify-center",
         "bg-dark",
-        "w-full min-h-screen"
+        "w-screen h-screen"
       )}>
-      <RegisterWarrantyCard />
+      <RegisterAdminCard />
     </div>
   );
 }

@@ -13,33 +13,80 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import Link from "next/link";
-import { LoginSchema } from "../schemas";
+import { RegisterAdminSchema } from "../schemas";
 import { useLogin } from "../api/use-login";
 import { Loader } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { useEffect } from "react";
+import { redirect, useSearchParams } from "next/navigation";
 
 export const RegisterAdminCard = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutate, isPending } = useLogin();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof RegisterAdminSchema>>({
+    resolver: zodResolver(RegisterAdminSchema),
     defaultValues: {
+      token: "",
+      name: "",
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    mutate({ json: values });
+  //récupérer le token contenu dans l'url sous la forme : url?token=token
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  if (!token) redirect("/");
+  form.setValue("token", token);
+
+  const onSubmit = (values: z.infer<typeof RegisterAdminSchema>) => {
+    // mutate({ json: values });
+    console.log(values);
   };
 
   return (
     <div className="flex flex-col w-full max-w-[480px]">
       <h1 className="font-marcellus text-creme font-bold text-4xl text-center mb-8">
-        Personal space
+        Register your admin account
       </h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-1">
+            <Label className="text-creme">Token</Label>
+            <FormField
+              name="token"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input {...field} type="text" disabled={true} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label className="text-creme">First Name</Label>
+            <FormField
+              name="name"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="John"
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="space-y-1">
             <Label className="text-creme">Email</Label>
             <FormField
@@ -91,17 +138,11 @@ export const RegisterAdminCard = () => {
                 Please wait...
               </>
             ) : (
-              "Sign In"
+              "Register as Admin"
             )}
           </Button>
         </form>
       </Form>
-      <p className="flex justify-between text-creme font-normal mt-8">
-        Don&apos;t have an account ?
-        <Link href="/warranty">
-          <span className="text-brown underline">Sign Up</span>
-        </Link>
-      </p>
     </div>
   );
 };

@@ -13,12 +13,19 @@ export const RegisterWarrantySchema = z.object({
   phoneIndex: z.string().min(1, "Required field"),
   phone: z.string().min(1, "Required field"),
   birthDate: z
-    .date({
-      required_error: "Please select a date and time",
-      invalid_type_error: "That's not a date!",
+    .preprocess(
+      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
+      z.date({
+        required_error: "Please select a date and time",
+        invalid_type_error: "That's not a date!",
+      })
+    )
+    .refine((date) => date >= new Date("1900-01-01"), {
+      message: "Can't be born before 1900",
     })
-    .min(new Date("1900-01-01"), { message: "Can't be born before 1900" })
-    .max(new Date(), { message: "Can't be born in the future" }),
+    .refine((date) => date <= new Date(), {
+      message: "Can't be born in the future",
+    }),
   country: z.string().min(1, "Required field"),
   password: z
     .string()
@@ -34,12 +41,19 @@ export const RegisterWarrantySchema = z.object({
     .regex(/^\d{5}$/, "Serial must be exactly 5 digits"),
   placeOfPurchase: z.string().min(1, "Required field"),
   purchaseDate: z
-    .date({
-      required_error: "Please select a date and time",
-      invalid_type_error: "That's not a date!",
+    .preprocess(
+      (arg) => (typeof arg === "string" ? new Date(arg) : arg),
+      z.date({
+        required_error: "Please select a date and time",
+        invalid_type_error: "That's not a date!",
+      })
+    )
+    .refine((date) => date >= new Date("2024-01-01"), {
+      message: "Can't be bought before 2024",
     })
-    .min(new Date("2000-01-01"), { message: "Can't be buyed before 2000" })
-    .max(new Date(), { message: "Can't be born in the future" }),
+    .refine((date) => date <= new Date(), {
+      message: "Can't be purchased in the future",
+    }),
   terms: z.boolean().refine((value) => value, { message: "Required field" }),
   requestWarranty: z
     .boolean()
@@ -47,6 +61,7 @@ export const RegisterWarrantySchema = z.object({
 });
 
 export const RegisterAdminSchema = z.object({
+  token: z.string().min(1, "Required field"),
   name: z.string().min(1, "Required field"),
   email: z.string().email("Invalid email format").min(1, "Required field"),
   password: z

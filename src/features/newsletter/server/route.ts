@@ -1,16 +1,32 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { zValidator } from "@hono/zod-validator";
 import { NewsletterFormSchema } from "../schemas";
-import { cors } from "hono/cors";
+
+const allowedOrigins = [
+  "https://www.renaudtixier.com",
+  "https://rt-newsletter-section-bundle.vercel.app/",
+];
 
 const app = new Hono()
+  .options("/add-email-to-hubspot", (c) => {
+    return c.text("", 204);
+  })
   .use(
-    "*",
+    "/add-email-to-hubspot",
     cors({
-      origin: "*",
-      allowMethods: ["GET", "POST", "OPTIONS"],
-      allowHeaders: ["Content-Type"],
+      origin: (origin) => {
+        if (allowedOrigins.includes(origin)) {
+          return origin;
+        }
+        return null; // Refuse les origines non autorisées
+      },
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization"],
+      exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
+      maxAge: 600,
+      credentials: true,
     })
   )
   .post(

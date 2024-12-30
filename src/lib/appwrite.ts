@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "server-only";
 
-import { Client, Account, Storage, Users, Databases } from "node-appwrite";
+import { Client, Account, Storage, Databases } from "node-appwrite";
 
 export async function createAdminClient() {
   const client = new Client()
@@ -11,6 +11,9 @@ export async function createAdminClient() {
   return {
     get account() {
       return new Account(client);
+    },
+    get databases() {
+      return new Databases(client);
     },
   };
 }

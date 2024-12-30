@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased min-h-screen font-axiforma">
+      <body className="antialiased min-h-screen w-full overflow-y-hidden font-axiforma">
         <Toaster />
         <QueryProvider>{children}</QueryProvider>
       </body>
