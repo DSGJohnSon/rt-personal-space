@@ -1198,3 +1198,63 @@ export const countries: countryType[] = [
     code: "ZW",
   },
 ];
+
+export const sucessMessages = [
+  {
+    code: "register_success",
+    fr: "Inscription réussie",
+    en: "Registration successful",
+    jp: "登録が成功しました",
+  },
+  {
+    code: "login_success",
+    fr: "Connexion réussie",
+    en: "Login successful",
+    jp: "ログインに成功しました",
+  },
+  {
+    code: "logout_success",
+    fr: "Déconnexion réussie",
+    en: "Logout successful",
+    jp: "ログアウトに成功しました",
+  },
+];
+
+export const errorMessages = [
+  {
+    code: "internal_error",
+    fr: "Erreur interne! Veuillez réessayer.",
+    en: "Internal error! Please try again.",
+    jp: "内部エラー！もう一度やり直してください。",
+  },
+  {
+    code: "invalid_invitation_token",
+    fr: "Token d'invitation invalide! Contactez l'administrateur.",
+    en: "Invalid invitation token! Contact the administrator.",
+    jp: "招待トークンが無効です！管理者に連絡してください。",
+  },
+  {
+    code: "already_used_email",
+    fr: "L'email est déjà utilisé!",
+    en: "Email is already used!",
+    jp: "メールアドレスはすでに使用されています！",
+  },
+  {
+    code: "cannot_create_user",
+    fr: "Impossible de créer l'utilisateur! Veuillez réeassayer.",
+    en: "Cannot create user! Please try again.",
+    jp: "ユーザーを作成できません！もう一度やり直してください。",
+  },
+  {
+    code: "cannot_add_user_to_admin_group",
+    fr: "Impossible d'ajouter l'utilisateur au groupe admin!",
+    en: "Cannot add user to admin group!",
+    jp: "ユーザーを管理者グループに追加できません！",
+  },
+  {
+    code: "cannot_create_session",
+    fr: "Impossible de créer une session!",
+    en: "Cannot create session!",
+    jp: "セッションを作成できません！",
+  },
+];

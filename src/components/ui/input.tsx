@@ -12,7 +12,8 @@ const inputVariants = cva("flex h-9 w-full px-3 py-1 pt-1.5 text-base", {
       rtPrimary: cn(
         "bg-transparent border border-brown font-normal text-dark duration-500 shadow-custom   text-white text-sm",
         "focus:outline-1",
-        "placeholder:text-creme/30"
+        "placeholder:text-creme/30",
+        "disabled:cursor-not-allowed disabled:opacity-50"
       ),
     },
   },

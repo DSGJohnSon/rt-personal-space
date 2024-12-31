@@ -13,17 +13,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { RegisterAdminSchema } from "../schemas";
-import { useLogin } from "../api/use-login";
 import { Loader } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { redirect, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { useRegisterAdmin } from "../api/use-register-admin";
 
 type RegisterAdminFormValues = z.infer<typeof RegisterAdminSchema>;
 
 export const RegisterAdminCard = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { mutate, isPending } = useLogin();
+  const { mutate, isPending } = useRegisterAdmin();
 
   const form = useForm<z.infer<typeof RegisterAdminSchema>>({
     resolver: zodResolver(RegisterAdminSchema),
@@ -36,8 +36,7 @@ export const RegisterAdminCard = () => {
   });
 
   const onSubmit = (values: z.infer<typeof RegisterAdminSchema>) => {
-    // mutate({ json: values });
-    console.log(values);
+    mutate({ json: values });
   };
 
   return (
