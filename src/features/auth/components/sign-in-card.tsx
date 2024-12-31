@@ -52,6 +52,7 @@ export const SignInCard = () => {
                       {...field}
                       type="email"
                       placeholder="mail@mail.com"
+                      variant={"rtPrimary"}
                       disabled={isPending}
                     />
                   </FormControl>
@@ -73,6 +74,7 @@ export const SignInCard = () => {
                       type="password"
                       placeholder="••••••••••"
                       disabled={isPending}
+                      variant={"rtPrimary"}
                     />
                   </FormControl>
                   <FormMessage />
@@ -81,7 +83,7 @@ export const SignInCard = () => {
             />
           </div>
           <Button
-            variant={"primary"}
+            variant={"rtPrimary"}
             size={"lg"}
             disabled={isPending}
             className="w-full">

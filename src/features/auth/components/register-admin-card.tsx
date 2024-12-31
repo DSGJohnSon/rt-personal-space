@@ -81,7 +81,12 @@ const RegisterAdminForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input {...field} type="text" disabled={true} />
+                    <Input
+                      {...field}
+                      type="text"
+                      disabled={true}
+                      variant={"rtPrimary"}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,6 +106,7 @@ const RegisterAdminForm = ({
                       type="text"
                       placeholder="John"
                       disabled={isPending}
+                      variant={"rtPrimary"}
                     />
                   </FormControl>
                   <FormMessage />
@@ -121,6 +127,7 @@ const RegisterAdminForm = ({
                       type="email"
                       placeholder="mail@mail.com"
                       disabled={isPending}
+                      variant={"rtPrimary"}
                     />
                   </FormControl>
                   <FormMessage />
@@ -141,6 +148,7 @@ const RegisterAdminForm = ({
                       type="password"
                       placeholder="••••••••••"
                       disabled={isPending}
+                      variant={"rtPrimary"}
                     />
                   </FormControl>
                   <FormMessage />
@@ -149,7 +157,7 @@ const RegisterAdminForm = ({
             />
           </div>
           <Button
-            variant={"primary"}
+            variant={"rtPrimary"}
             size={"lg"}
             disabled={isPending}
             className="w-full">

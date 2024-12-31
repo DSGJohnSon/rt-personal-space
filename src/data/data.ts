@@ -1,4 +1,62 @@
-export const countries = [
+import { Country } from "react-phone-number-input";
+
+type countryType = {
+  name: string;
+  dial_code: string;
+  code: Country;
+};
+
+export const countries: countryType[] = [
+  {
+    name: "Switzerland",
+    dial_code: "+41",
+    code: "CH",
+  },
+  {
+    name: "France",
+    dial_code: "+33",
+    code: "FR",
+  },
+  {
+    name: "China",
+    dial_code: "+86",
+    code: "CN",
+  },
+  {
+    name: "United States",
+    dial_code: "+1",
+    code: "US",
+  },
+  {
+    name: "Russia",
+    dial_code: "+7",
+    code: "RU",
+  },
+  {
+    name: "Japan",
+    dial_code: "+81",
+    code: "JP",
+  },
+  {
+    name: "Singapore",
+    dial_code: "+65",
+    code: "SG",
+  },
+  {
+    name: "United Arab Emirates",
+    dial_code: "+971",
+    code: "AE",
+  },
+  {
+    name: "Italy",
+    dial_code: "+39",
+    code: "IT",
+  },
+  {
+    name: "Germany",
+    dial_code: "+49",
+    code: "DE",
+  },
   {
     name: "Afghanistan",
     dial_code: "+93",
@@ -38,11 +96,6 @@ export const countries = [
     name: "Anguilla",
     dial_code: "+1264",
     code: "AI",
-  },
-  {
-    name: "Antarctica",
-    dial_code: "+672",
-    code: "AQ",
   },
   {
     name: "Antigua and Barbuda",
@@ -215,11 +268,6 @@ export const countries = [
     code: "CL",
   },
   {
-    name: "China",
-    dial_code: "+86",
-    code: "CN",
-  },
-  {
     name: "Christmas Island",
     dial_code: "+61",
     code: "CX",
@@ -360,11 +408,6 @@ export const countries = [
     code: "FI",
   },
   {
-    name: "France",
-    dial_code: "+33",
-    code: "FR",
-  },
-  {
     name: "French Guiana",
     dial_code: "+594",
     code: "GF",
@@ -388,11 +431,6 @@ export const countries = [
     name: "Georgia",
     dial_code: "+995",
     code: "GE",
-  },
-  {
-    name: "Germany",
-    dial_code: "+49",
-    code: "DE",
   },
   {
     name: "Ghana",
@@ -520,19 +558,9 @@ export const countries = [
     code: "IL",
   },
   {
-    name: "Italy",
-    dial_code: "+39",
-    code: "IT",
-  },
-  {
     name: "Jamaica",
     dial_code: "+1876",
     code: "JM",
-  },
-  {
-    name: "Japan",
-    dial_code: "+81",
-    code: "JP",
   },
   {
     name: "Jersey",
@@ -760,11 +788,6 @@ export const countries = [
     code: "NL",
   },
   {
-    name: "Netherlands Antilles",
-    dial_code: "+599",
-    code: "AN",
-  },
-  {
     name: "New Caledonia",
     dial_code: "+687",
     code: "NC",
@@ -855,11 +878,6 @@ export const countries = [
     code: "PH",
   },
   {
-    name: "Pitcairn",
-    dial_code: "+872",
-    code: "PN",
-  },
-  {
     name: "Poland",
     dial_code: "+48",
     code: "PL",
@@ -883,11 +901,6 @@ export const countries = [
     name: "Romania",
     dial_code: "+40",
     code: "RO",
-  },
-  {
-    name: "Russia",
-    dial_code: "+7",
-    code: "RU",
   },
   {
     name: "Rwanda",
@@ -975,11 +988,6 @@ export const countries = [
     code: "SL",
   },
   {
-    name: "Singapore",
-    dial_code: "+65",
-    code: "SG",
-  },
-  {
     name: "Slovakia",
     dial_code: "+421",
     code: "SK",
@@ -1008,11 +1016,6 @@ export const countries = [
     name: "South Sudan",
     dial_code: "+211",
     code: "SS",
-  },
-  {
-    name: "South Georgia and the South Sandwich Islands",
-    dial_code: "+500",
-    code: "GS",
   },
   {
     name: "Spain",
@@ -1048,11 +1051,6 @@ export const countries = [
     name: "Sweden",
     dial_code: "+46",
     code: "SE",
-  },
-  {
-    name: "Switzerland",
-    dial_code: "+41",
-    code: "CH",
   },
   {
     name: "Syrian Arab Republic",
@@ -1140,19 +1138,9 @@ export const countries = [
     code: "UA",
   },
   {
-    name: "United Arab Emirates",
-    dial_code: "+971",
-    code: "AE",
-  },
-  {
     name: "United Kingdom",
     dial_code: "+44",
     code: "GB",
-  },
-  {
-    name: "United States",
-    dial_code: "+1",
-    code: "US",
   },
   {
     name: "Uruguay",

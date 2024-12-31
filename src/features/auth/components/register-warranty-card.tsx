@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import Link from "next/link";
 import { RegisterWarrantySchema } from "../schemas";
-import { CalendarIcon, Check, Loader, LucideHelpCircle } from "lucide-react";
+import { CalendarIcon, Loader, LucideHelpCircle } from "lucide-react";
 import TextSeparator from "@/components/text-separator";
 import {
   Select,
@@ -31,20 +31,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { useState } from "react";
 import { countries } from "@/data/data";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import Image from "next/image";
-import { CaretSortIcon } from "@radix-ui/react-icons";
 import {
   Dialog,
   DialogContent,
@@ -56,6 +45,7 @@ import {
 import HowToFindSerial from "./other/how-to-find-serial";
 import { useRegisterWarranty } from "../api/use-register-warranty";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FlagComponent, PhoneInput } from "@/components/ui/phone-input";
 
 export const RegisterWarrantyCard = () => {
   const { mutate, isPending } = useRegisterWarranty();
@@ -67,7 +57,6 @@ export const RegisterWarrantyCard = () => {
       firstname: "",
       name: "",
       email: "",
-      phoneIndex: "+41",
       phone: "",
       birthDate: undefined,
       country: "",
@@ -79,8 +68,6 @@ export const RegisterWarrantyCard = () => {
       requestWarranty: false,
     },
   });
-
-  const [popoverPhoneIndexOpen, setPopoverPhoneIndexOpen] = useState(false);
 
   const onSubmit = (values: z.infer<typeof RegisterWarrantySchema>) => {
     mutate({ json: values });
@@ -107,7 +94,7 @@ export const RegisterWarrantyCard = () => {
                         onValueChange={field.onChange}
                         defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger variant={"rtPrimary"}>
                             <SelectValue placeholder="Select your civility" />
                           </SelectTrigger>
                         </FormControl>
@@ -132,6 +119,7 @@ export const RegisterWarrantyCard = () => {
                     <FormControl>
                       <Input
                         {...field}
+                        variant={"rtPrimary"}
                         placeholder="John"
                         disabled={isPending}
                       />
@@ -150,6 +138,7 @@ export const RegisterWarrantyCard = () => {
                   <FormItem>
                     <FormControl>
                       <Input
+                        variant={"rtPrimary"}
                         {...field}
                         placeholder="Doe"
                         disabled={isPending}
@@ -172,6 +161,7 @@ export const RegisterWarrantyCard = () => {
                     <FormControl>
                       <Input
                         {...field}
+                        variant={"rtPrimary"}
                         type="email"
                         placeholder="john@doe.fr"
                         disabled={isPending}
@@ -186,117 +176,37 @@ export const RegisterWarrantyCard = () => {
               <FormLabel htmlFor="phone" className="text-creme">
                 Phone number
               </FormLabel>
-              <div className="flex items-center">
-                <div className="space-y-1 w-auto">
-                  <FormField
-                    control={form.control}
-                    name="phoneIndex"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <Popover open={popoverPhoneIndexOpen}>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="blank"
-                                size={"blank"}
-                                role="combobox"
-                                className={cn(
-                                  "flex items-center justify-between",
-                                  "bg-transparent text-creme",
-                                  "text-sm font-normal",
-                                  "border border-r-0 border-brown",
-                                  "p-3",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                                onClick={() => {
-                                  setPopoverPhoneIndexOpen(true);
-                                }}>
-                                <span>
-                                  {field.value
-                                    ? countries.find(
-                                        (phoneIndex) =>
-                                          phoneIndex.dial_code === field.value
-                                      )?.dial_code
-                                    : "Select your country code"}
-                                </span>
-                                <CaretSortIcon className="text-brown" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-[300px] p-0 delay-0">
-                            <Command>
-                              <CommandInput placeholder="Search phone index..." />
-                              <CommandList>
-                                <CommandEmpty>No indexes found.</CommandEmpty>
-                                <CommandGroup>
-                                  {countries.map((phoneIndex, index) => (
-                                    <CommandItem
-                                      value={phoneIndex.name}
-                                      key={phoneIndex.dial_code + index}
-                                      onSelect={() => {
-                                        form.setValue(
-                                          "phoneIndex",
-                                          phoneIndex.dial_code
-                                        );
-                                        setPopoverPhoneIndexOpen(false);
-                                      }}>
-                                      <Image
-                                        src={`https://flagcdn.com/${phoneIndex.code.toLowerCase()}.svg`}
-                                        width={0}
-                                        height={0}
-                                        alt={`${phoneIndex.name} flag`}
-                                        style={{
-                                          width: "20px",
-                                          height: "auto",
-                                        }}
-                                      />
-                                      <span>({phoneIndex.dial_code})</span>
-                                      {phoneIndex.name}
-                                      <Check
-                                        className={cn(
-                                          "ml-auto",
-                                          phoneIndex.dial_code === field.value
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                      />
-                                    </CommandItem>
-                                  ))}
-                                </CommandGroup>
-                              </CommandList>
-                            </Command>
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="space-y-1 w-full">
-                  <FormField
-                    name="phone"
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="tel"
-                            placeholder="x xx xx xx xx"
-                            disabled={isPending}
-                            onChange={(e) => {
-                              form.setValue(
-                                "phone",
-                                e.target.value.replace(/\D/g, "")
-                              );
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+              <div className="space-y-1 w-full">
+                <FormField
+                  name="phone"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <PhoneInput
+                          onChange={(value) => field.onChange(value)}
+                          value={field.value}
+                          defaultCountry="CH"
+                          international={true}
+                          countryOptionsOrder={[
+                            "CH",
+                            "FR",
+                            "CN",
+                            "US",
+                            "RU",
+                            "JP",
+                            "SG",
+                            "AE",
+                            "IT",
+                            "DE",
+                          ]}
+                          placeholder="Phone number"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
           </div>
@@ -313,7 +223,7 @@ export const RegisterWarrantyCard = () => {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"input"}
+                          variant={"default"}
                           className={cn(
                             "pl-3 text-left font-normal",
                             !field.value && "text-creme/30"
@@ -332,9 +242,6 @@ export const RegisterWarrantyCard = () => {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        autoFocus
-                        startMonth={new Date(1900, 1)}
-                        endMonth={new Date(2025, 2)}
                       />
                     </PopoverContent>
                   </Popover>
@@ -357,7 +264,7 @@ export const RegisterWarrantyCard = () => {
                       onValueChange={field.onChange}
                       defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger variant={"rtPrimary"}>
                           <SelectValue
                             placeholder="Select your country"
                             className={"placeholder:text-red-600"}
@@ -368,15 +275,9 @@ export const RegisterWarrantyCard = () => {
                         {countries.map((country) => (
                           <SelectItem value={country.name} key={country.code}>
                             <div className="flex items-center gap-2">
-                              <Image
-                                src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
-                                width={0}
-                                height={0}
-                                alt={`${country.name} flag`}
-                                style={{
-                                  width: "20px",
-                                  height: "auto",
-                                }}
+                              <FlagComponent
+                                country={country.code}
+                                countryName={country.name}
                               />
                               {country.name}
                             </div>
@@ -400,6 +301,7 @@ export const RegisterWarrantyCard = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      variant={"rtPrimary"}
                       type="password"
                       placeholder="••••••••••"
                       disabled={isPending}
@@ -439,6 +341,7 @@ export const RegisterWarrantyCard = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      variant={"rtPrimary"}
                       placeholder="XXXXX"
                       disabled={isPending}
                     />
@@ -462,7 +365,7 @@ export const RegisterWarrantyCard = () => {
                       onValueChange={field.onChange}
                       defaultValue={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger variant={"rtPrimary"}>
                           <SelectValue
                             placeholder="Select your country"
                             className={"placeholder:text-red-600"}
@@ -473,11 +376,9 @@ export const RegisterWarrantyCard = () => {
                         {countries.slice(0, 10).map((country) => (
                           <SelectItem value={country.name} key={country.code}>
                             <div className="flex items-center gap-2">
-                              <Image
-                                src={`https://flagcdn.com/${country.code.toLowerCase()}.svg`}
-                                width="20"
-                                height="20"
-                                alt={`${country.name} flag`}
+                              <FlagComponent
+                                country={country.code}
+                                countryName={country.name}
                               />
                               {country.name}
                             </div>
@@ -504,7 +405,7 @@ export const RegisterWarrantyCard = () => {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"input"}
+                          variant={"default"}
                           className={cn(
                             "pl-3 text-left font-normal",
                             !field.value && "text-creme/30"
@@ -523,9 +424,6 @@ export const RegisterWarrantyCard = () => {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        autoFocus
-                        startMonth={new Date(2024, 1)}
-                        endMonth={new Date()}
                       />
                     </PopoverContent>
                   </Popover>
@@ -542,17 +440,27 @@ export const RegisterWarrantyCard = () => {
                 <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                   <FormControl>
                     <Checkbox
+                      variant={"rtPrimary"}
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
                   <div>
-                    <FormLabel htmlFor="purchaseDate" className="text-creme">
+                    <FormLabel
+                      htmlFor="terms"
+                      className="text-creme cursor-pointer"
+                      onClick={() => field.onChange(!field.value)}>
                       Terms & Conditions
                     </FormLabel>
-                    <FormDescription className="text-xs font-normal text-creme/80">
+                    <FormDescription
+                      className="text-xs font-normal text-creme/80 cursor-pointer"
+                      onClick={() => field.onChange(!field.value)}>
                       By checking this box, I hereby consent to the{" "}
-                      <Link href="/examples/forms" className="underline">
+                      <Link
+                        href="https://www.renaudtixier.com/fr/legal"
+                        target="_blank"
+                        className="underline"
+                        onClick={(e) => e.stopPropagation()}>
                         Terms and Conditions
                       </Link>{" "}
                       and authorize RENAUD TIXIER to send me engaging
@@ -575,17 +483,27 @@ export const RegisterWarrantyCard = () => {
                     <Checkbox
                       checked={field.value}
                       onCheckedChange={field.onChange}
+                      variant={"rtPrimary"}
                     />
                   </FormControl>
                   <div>
-                    <FormLabel htmlFor="purchaseDate" className="text-creme">
+                    <FormLabel
+                      htmlFor="purchaseDate"
+                      className="text-creme cursor-pointer"
+                      onClick={() => field.onChange(!field.value)}>
                       Request Warranty
                     </FormLabel>
-                    <FormDescription className="text-xs font-normal text-creme/80">
+                    <FormDescription
+                      className="text-xs font-normal text-creme/80 cursor-pointer"
+                      onClick={() => field.onChange(!field.value)}>
                       By checking this box, I request an additional three years
                       of warranty to complement the two years I currently have,
                       ensuring comprehensive coverage as specified in the{" "}
-                      <Link href="/examples/forms" className="underline">
+                      <Link
+                        href="https://www.renaudtixier.com/fr/warranty"
+                        target="_blank"
+                        className="underline"
+                        onClick={(e) => e.stopPropagation()}>
                         Warranty Conditions
                       </Link>
                     </FormDescription>
@@ -597,7 +515,7 @@ export const RegisterWarrantyCard = () => {
           </div>
           <div>
             <Button
-              variant={"primary"}
+              variant={"rtPrimary"}
               size={"lg"}
               disabled={isPending}
               className="w-full mt-4"
@@ -608,15 +526,15 @@ export const RegisterWarrantyCard = () => {
                   Please wait...
                 </>
               ) : (
-                "Sign In"
+                "Register my warranty"
               )}
             </Button>
           </div>
         </form>
       </Form>
       <p className="flex justify-between text-creme font-normal mt-8">
-        Don&apos;t have an account ?
-        <Link href="/sign-up">
+        Already have an account ?
+        <Link href="/sign-in">
           <span className="text-brown underline">Sign In</span>
         </Link>
       </p>

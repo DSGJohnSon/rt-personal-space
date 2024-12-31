@@ -2,11 +2,7 @@
 import { Hono } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
 import { zValidator } from "@hono/zod-validator";
-import {
-  LoginSchema,
-  RegisterWarrantySchema,
-  RegisterAdminSchema,
-} from "../schemas";
+import { LoginSchema, RegisterWarrantySchema } from "../schemas";
 import { createAdminClient } from "@/lib/appwrite";
 import { ID } from "node-appwrite";
 import { AUTH_COOKIE } from "../constants";
@@ -43,7 +39,6 @@ const app = new Hono()
         firstname,
         name,
         email,
-        phoneIndex,
         phone,
         birthDate,
         country,
@@ -58,8 +53,6 @@ const app = new Hono()
       try {
         const { account, databases } = await createAdminClient();
 
-        const phoneNumber = `${phoneIndex}${phone}`;
-
         const user = await account.create(ID.unique(), email, password, name);
 
         const userInfo = await databases.createDocument(
@@ -71,7 +64,7 @@ const app = new Hono()
             firstname,
             name,
             civility,
-            phone: phoneNumber,
+            phone,
             birthDate,
             country,
             serial,

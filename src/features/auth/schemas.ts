@@ -10,7 +10,6 @@ export const RegisterWarrantySchema = z.object({
   firstname: z.string().trim().min(1, "Required field"),
   name: z.string().trim().min(1, "Required filed"),
   email: z.string().email("Invalid email format").min(1, "Required field"),
-  phoneIndex: z.string().min(1, "Required field"),
   phone: z.string().min(1, "Required field"),
   birthDate: z
     .preprocess(
