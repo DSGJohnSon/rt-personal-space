@@ -1,5 +1,4 @@
 import { getCurrent, getUserInfo } from "@/features/auth/action";
-import UserButton from "@/features/auth/components/user-button";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -17,7 +16,6 @@ async function Page() {
       <div>Page</div>
       <div>Hello {user?.email}</div>
       <div>{JSON.stringify(userInfo)}</div>
-      <UserButton />
     </>
   );
 }

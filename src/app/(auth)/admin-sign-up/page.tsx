@@ -19,7 +19,8 @@ export default async function AdminSignUpPage() {
       className={cn(
         "flex items-center justify-center",
         "bg-dark",
-        "w-screen h-screen"
+        "w-screen h-screen",
+        "px-4 lg:px-0"
       )}>
       <RegisterAdminCard />
     </div>

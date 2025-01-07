@@ -1,9 +1,27 @@
+import {
+  LucideHome,
+  LucideKey,
+  LucideProps,
+  LucideTag,
+  LucideUserRoundCog,
+  LucideUsers,
+} from "lucide-react";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { Country } from "react-phone-number-input";
 
 type countryType = {
   name: string;
   dial_code: string;
   code: Country;
+};
+
+export type adminPageType = {
+  label: string;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+  href: string;
+  zone: string;
 };
 
 export const countries: countryType[] = [
@@ -1196,6 +1214,39 @@ export const countries: countryType[] = [
     name: "Zimbabwe",
     dial_code: "+263",
     code: "ZW",
+  },
+];
+
+export const adminPages = [
+  {
+    label: "Dashboard",
+    icon: LucideHome,
+    href: "/admin",
+    zone: "",
+  },
+  {
+    label: "Serials",
+    icon: LucideKey,
+    href: "/admin/serials",
+    zone: "content",
+  },
+  {
+    label: "Retailers",
+    icon: LucideTag,
+    href: "/admin/retailers",
+    zone: "content",
+  },
+  {
+    label: "Clients",
+    icon: LucideUsers,
+    href: "/admin/clients",
+    zone: "data",
+  },
+  {
+    label: "Users",
+    icon: LucideUserRoundCog,
+    href: "/admin/users",
+    zone: "admin",
   },
 ];
 

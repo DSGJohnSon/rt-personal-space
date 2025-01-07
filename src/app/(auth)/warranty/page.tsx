@@ -17,7 +17,8 @@ export default async function SignUpPage() {
       className={cn(
         "flex flex-col items-center justify-center",
         "bg-dark",
-        "w-full min-h-screen"
+        "w-full min-h-screen",
+        "px-4 lg:px-0"
       )}>
       <RegisterWarrantyCard />
     </div>
