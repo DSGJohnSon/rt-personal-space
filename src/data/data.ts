@@ -1258,6 +1258,12 @@ export const sucessMessages = [
     jp: "登録が成功しました",
   },
   {
+    code: "link_copied",
+    fr: "Lien copié",
+    en: "Link copied",
+    jp: "リンクがコピーされました",
+  },
+  {
     code: "login_success",
     fr: "Connexion réussie",
     en: "Login successful",

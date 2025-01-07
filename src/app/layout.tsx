@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { QueryProvider } from "@/components/query-provider";
 import { Toaster } from "sonner";
-import { getCurrent } from "@/features/auth/action";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Renaud Tixier | Rethink centuries-old watchmaking",
