@@ -1,9 +1,27 @@
+import {
+  LucideHome,
+  LucideKey,
+  LucideProps,
+  LucideTag,
+  LucideUserRoundCog,
+  LucideUsers,
+} from "lucide-react";
+import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { Country } from "react-phone-number-input";
 
 type countryType = {
   name: string;
   dial_code: string;
   code: Country;
+};
+
+export type adminPageType = {
+  label: string;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+  href: string;
+  zone: string;
 };
 
 export const countries: countryType[] = [
@@ -1199,6 +1217,39 @@ export const countries: countryType[] = [
   },
 ];
 
+export const adminPages = [
+  {
+    label: "Dashboard",
+    icon: LucideHome,
+    href: "/admin",
+    zone: "",
+  },
+  {
+    label: "Serials",
+    icon: LucideKey,
+    href: "/admin/serials",
+    zone: "content",
+  },
+  {
+    label: "Retailers",
+    icon: LucideTag,
+    href: "/admin/retailers",
+    zone: "content",
+  },
+  {
+    label: "Clients",
+    icon: LucideUsers,
+    href: "/admin/clients",
+    zone: "data",
+  },
+  {
+    label: "Users",
+    icon: LucideUserRoundCog,
+    href: "/admin/users",
+    zone: "admin",
+  },
+];
+
 export const sucessMessages = [
   {
     code: "register_success",
@@ -1228,10 +1279,22 @@ export const errorMessages = [
     jp: "内部エラー！もう一度やり直してください。",
   },
   {
+    code: "general_argument_invalid",
+    fr: "La requête contient un ou plusieurs arguments invalides. Veuillez vous référer à la documentation de l'endpoint.",
+    en: "The request contains one or more invalid arguments. Please refer to the endpoint documentation.",
+    jp: "リクエストに1つ以上の無効な引数が含まれています。エンドポイントのドキュメントを参照してください。",
+  },
+  {
     code: "invalid_invitation_token",
     fr: "Token d'invitation invalide! Contactez l'administrateur.",
     en: "Invalid invitation token! Contact the administrator.",
     jp: "招待トークンが無効です！管理者に連絡してください。",
+  },
+  {
+    code: "user_invalid_credentials",
+    fr: "Identifiants invalides! Veuillez réessayer.",
+    en: "Invalid credentials! Please try again.",
+    jp: "無効な資格情報！もう一度やり直してください。",
   },
   {
     code: "already_used_email",

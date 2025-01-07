@@ -14,27 +14,57 @@ import { sessionMiddleware } from "@/lib/session-middleware";
 import { HTTPException } from "hono/http-exception";
 
 const app = new Hono()
+  // Récupération de l'utilisateur actuel
   .get("/current", sessionMiddleware, async (c) => {
     const user = c.get("user");
 
     return c.json({ data: user });
   })
+  // Connexion
   .post("/login", zValidator("json", LoginSchema), async (c) => {
     const { email, password } = c.req.valid("json");
-
     const { account } = await createAdminClient();
-    const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(c, AUTH_COOKIE, session.secret, {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+    try {
+      try {
+        const session = await account.createEmailPasswordSession(
+          email,
+          password
+        );
+        setCookie(c, AUTH_COOKIE, session.secret, {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+          maxAge: 60 * 60 * 24 * 30,
+        });
+      } catch (error) {
+        console.log(error);
+        switch (error instanceof Error && "type" in error ? error.type : 0) {
+          case "user_invalid_credentials": //Code for invalid credentials in appwrite
+            throw new HTTPException(400, {
+              message: "user_invalid_credentials",
+            });
+          case "general_argument_invalid":
+            throw new HTTPException(400, {
+              message: "general_argument_invalid",
+            });
+          default:
+            throw new HTTPException(400, {
+              message: "internal_error",
+            });
+        }
+      }
+    } catch (error) {
+      // Renvoie une réponse JSON avec le message d'erreur
+      const status = error instanceof HTTPException ? error.status : 500;
+      const message = error instanceof Error ? error.message : "internal_error";
+      return c.json({ success: false, message }, status);
+    }
 
-    return c.json({ success: true });
+    return c.json({ success: true, message: "login_success" });
   })
+  // Création d'un utilisateur
   .post(
     "/register-warranty",
     zValidator("json", RegisterWarrantySchema),
@@ -58,32 +88,50 @@ const app = new Hono()
       try {
         const { account, databases } = await createAdminClient();
 
-        const user = await account.create(ID.unique(), email, password, name);
-
-        const userInfo = await databases.createDocument(
-          process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_USERINFO_COLLECTION!,
-          ID.unique(),
-          {
-            userId: user.$id,
-            firstname,
-            name,
-            civility,
-            phone,
-            birthDate,
-            country,
-            serial,
-            placeOfPurchase,
-            purchaseDate,
-            terms,
-            requestWarranty,
+        // Création de l'utilisateur
+        try {
+          const user = await account.create(ID.unique(), email, password, name);
+          const userInfo = await databases.createDocument(
+            process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+            process.env.NEXT_PUBLIC_APPWRITE_USERINFO_COLLECTION!,
+            ID.unique(),
+            {
+              userId: user.$id,
+              firstname,
+              name,
+              civility,
+              phone,
+              birthDate,
+              country,
+              serial,
+              placeOfPurchase,
+              purchaseDate,
+              terms,
+              requestWarranty,
+            }
+          );
+        } catch (error) {
+          switch (error instanceof Error && "code" in error ? error.code : 0) {
+            case 409: //Code 409 is for conflict in appwrite
+              throw new HTTPException(400, {
+                message: "already_used_email",
+              });
+            default:
+              throw new HTTPException(400, {
+                message: "cannot_create_user",
+              });
           }
-        );
+        }
 
-        const session = await account.createEmailPasswordSession(
-          email,
-          password
-        );
+        // Création de session
+        let session;
+        try {
+          session = await account.createEmailPasswordSession(email, password);
+        } catch (error) {
+          throw new HTTPException(400, {
+            message: "cannot_create_session",
+          });
+        }
 
         setCookie(c, AUTH_COOKIE, session.secret, {
           path: "/",
@@ -93,13 +141,17 @@ const app = new Hono()
           maxAge: 60 * 60 * 24 * 30,
         });
       } catch (error) {
-        console.error(error);
-        return c.json({ success: false });
+        // Renvoie une réponse JSON avec le message d'erreur
+        const status = error instanceof HTTPException ? error.status : 500;
+        const message =
+          error instanceof Error ? error.message : "internal_error";
+        return c.json({ success: false, message }, status);
       }
 
-      return c.json({ success: true });
+      return c.json({ success: true, message: "register_success" });
     }
   )
+  // Création d'un administrateur
   .post(
     "/register-admin",
     zValidator("json", RegisterAdminSchema),
@@ -163,8 +215,6 @@ const app = new Hono()
           sameSite: "strict",
           maxAge: 60 * 60 * 24 * 30,
         });
-
-        return c.json({ success: true, message: "register_success" });
       } catch (error) {
         // Renvoie une réponse JSON avec le message d'erreur
         const status = error instanceof HTTPException ? error.status : 500;
@@ -172,8 +222,11 @@ const app = new Hono()
           error instanceof Error ? error.message : "internal_error";
         return c.json({ success: false, message }, status);
       }
+
+      return c.json({ success: true, message: "register_success" });
     }
   )
+  // Déconnexion
   .post("/logout", sessionMiddleware, async (c) => {
     const account = c.get("account");
 

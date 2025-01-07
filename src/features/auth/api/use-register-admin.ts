@@ -55,7 +55,7 @@ export const useRegisterAdmin = () => {
       if (!traductedError) {
         toast.error(error.message); //afficher le message d'erreur par défaut
       } else {
-        toast.error(traductedError.fr); //afficher le message d'erreur personnalisé
+        toast.error(traductedError.en); //afficher le message d'erreur personnalisé
       }
     },
   });

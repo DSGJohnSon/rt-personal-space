@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 
 export default async function SignInPage() {
   const user = await getCurrent();
+  console.log(user);
   if (user && user.labels.includes("admin")) {
     redirect("/admin");
   }
@@ -19,7 +20,8 @@ export default async function SignInPage() {
       className={cn(
         "flex items-center justify-center",
         "bg-dark",
-        "w-screen h-screen"
+        "w-screen h-screen",
+        "px-4 lg:px-0"
       )}>
       <SignInCard />
     </div>
