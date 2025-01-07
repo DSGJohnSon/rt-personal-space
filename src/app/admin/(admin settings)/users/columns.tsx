@@ -4,8 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import {
   LucideArrowUpDown,
   LucideCopy,
-  LucideExternalLink,
-  LucideMailOpen,
   LucideMoreHorizontal,
 } from "lucide-react";
 
@@ -19,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
 import { toast } from "sonner";
 import { sucessMessages } from "@/data/data";
 import { Badge, BadgeProps } from "@/components/ui/badge";
