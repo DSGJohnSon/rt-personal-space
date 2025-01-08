@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
   LucideArrowUpDown,
+  LucideClipboard,
   LucideCopy,
   LucideMoreHorizontal,
 } from "lucide-react";
@@ -20,6 +21,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { sucessMessages } from "@/data/data";
 import { Badge, BadgeProps } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -143,6 +150,41 @@ export const columns: ColumnDef<UserAdmin>[] = [
           className="flex items-center gap-2 hover:text-slate-900 hover:cursor-pointer">
           Token
           <LucideArrowUpDown className="h-4 w-4 mb-0.5" />
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      const token = row.getValue("token") as string;
+
+      return (
+        <div className="flex items-center gap-2">
+          {token}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <LucideClipboard
+                  className="size-3 pb-0.5 text-slate-400 hover:text-slate-900 cursor-pointer"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${process.env
+                        .NEXT_PUBLIC_APP_URL!}/admin-sign-up?token=${token}`
+                    );
+                    const traductedSucessMessage = sucessMessages.find(
+                      (item) => item.code === "link_copied"
+                    );
+                    if (!traductedSucessMessage) {
+                      toast.success("link_copied"); //afficher le message par défaut
+                    } else {
+                      toast.success(traductedSucessMessage.fr);
+                    }
+                  }}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Copy Register Link</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       );
     },

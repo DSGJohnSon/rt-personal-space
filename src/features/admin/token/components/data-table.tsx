@@ -21,15 +21,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "./button";
+import { Button } from "../../../../components/ui/button";
 import React from "react";
-import { Input } from "./input";
+import { Input } from "../../../../components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "./dropdown-menu";
+} from "../../../../components/ui/dropdown-menu";
 import { LucideListTodo } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
@@ -37,7 +37,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTableTokens<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -81,9 +81,8 @@ export function DataTable<TData, TValue>({
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline" size={"icon"} className="ml-auto">
               <LucideListTodo className="h-4 w-4" />
-              Columns
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

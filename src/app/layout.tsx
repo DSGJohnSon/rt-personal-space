@@ -33,7 +33,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased min-h-screen w-full overflow-y-hidden font-axiforma">
-        <Toaster />
+        <Toaster closeButton richColors />
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

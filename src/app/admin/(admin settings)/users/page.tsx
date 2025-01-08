@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/ui/data-table";
+import { DataTableTokens } from "@/features/admin/token/components/data-table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import React from "react";
 import { UserAdmin, columns } from "./columns";
@@ -12,7 +12,7 @@ async function getData(): Promise<UserAdmin[]> {
       updatedAt: new Date("2021-09-01"),
       status: "invited",
       email: "fred.florkowski@outlook.fr",
-      token: "token1",
+      token: "728ed52f728ed52f728ed52f",
     },
     {
       id: "728ed52f",
@@ -39,7 +39,7 @@ async function Page() {
   return (
     <>
       <ScrollArea className="w-full h-full">
-        <DataTable columns={columns} data={data} />
+        <DataTableTokens columns={columns} data={data} />
       </ScrollArea>
     </>
   );

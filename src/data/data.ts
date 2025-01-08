@@ -1264,6 +1264,12 @@ export const sucessMessages = [
     jp: "リンクがコピーされました",
   },
   {
+    code: "token_copied",
+    fr: "Token copié",
+    en: "Token copied",
+    jp: "トークンがコピーされました",
+  },
+  {
     code: "login_success",
     fr: "Connexion réussie",
     en: "Login successful",
