@@ -66,6 +66,11 @@ export function DataTableTokens<TData, TValue>({
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 7, // Définit la taille de page initiale à 7
+      },
+    },
   });
 
   return (
@@ -157,6 +162,7 @@ export function DataTableTokens<TData, TValue>({
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
+          <p className="text-xs">7 rows per page.</p>
         </div>
 
         <div className="flex items-center justify-end space-x-2 py-4">

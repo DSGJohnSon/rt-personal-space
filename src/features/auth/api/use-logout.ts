@@ -5,7 +5,7 @@ import { InferResponseType } from "hono";
 import { client } from "@/lib/rpc";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { sucessMessages } from "@/data/data";
+import { errorMessages, sucessMessages } from "@/data/data";
 
 type ResponseType = InferResponseType<(typeof client.api.auth.logout)["$post"]>;
 
@@ -18,14 +18,25 @@ export const useLogout = () => {
       const response = await client.api.auth.logout["$post"]();
       return await response.json();
     },
-    onSuccess: () => {
-      const traductedSucessMessage = sucessMessages.find(
-        (item) => item.code === "logout_success"
-      );
-      if (!traductedSucessMessage) {
-        toast.success("logout_success"); //afficher le message par défaut
+    onSuccess: (response) => {
+      if (response.success) {
+        const traductedSucessMessage = sucessMessages.find(
+          (item) => item.code === "logout_success"
+        );
+        if (!traductedSucessMessage) {
+          toast.success("logout_success"); //afficher le message par défaut
+        } else {
+          toast.success(traductedSucessMessage.fr); //afficher le message de succès personnalisé
+        }
       } else {
-        toast.success(traductedSucessMessage.en); //afficher le message de succès personnalisé
+        const traductedError = errorMessages.find(
+          (item) => item.code === "logout_failed"
+        );
+        if (!traductedError) {
+          toast.error("logout_failed"); //afficher le message d'erreur par défaut
+        } else {
+          toast.error(traductedError.en); //afficher le message d'erreur personnalisé
+        }
       }
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["current"] });

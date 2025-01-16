@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { Account, Client, Databases, Query } from "node-appwrite";
 import { AUTH_COOKIE } from "./constants";
+import { DATABASE_ID, USER_INFO_ID } from "@/config";
 
 export const getCurrent = async () => {
   try {
@@ -32,8 +33,8 @@ export const getUserInfo = async (userId: string) => {
 
     const db = new Databases(client);
     const userInfo = await db.listDocuments(
-      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_USERINFO_COLLECTION!,
+      DATABASE_ID,
+      USER_INFO_ID,
       [
         Query.select([
           "civility",

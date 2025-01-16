@@ -12,6 +12,7 @@ import { ID } from "node-appwrite";
 import { AUTH_COOKIE } from "../constants";
 import { sessionMiddleware } from "@/lib/session-middleware";
 import { HTTPException } from "hono/http-exception";
+import { DATABASE_ID, USER_INFO_ID } from "@/config";
 
 const app = new Hono()
   // Récupération de l'utilisateur actuel
@@ -92,8 +93,8 @@ const app = new Hono()
         try {
           const user = await account.create(ID.unique(), email, password, name);
           const userInfo = await databases.createDocument(
-            process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
-            process.env.NEXT_PUBLIC_APPWRITE_USERINFO_COLLECTION!,
+            DATABASE_ID,
+            USER_INFO_ID,
             ID.unique(),
             {
               userId: user.$id,

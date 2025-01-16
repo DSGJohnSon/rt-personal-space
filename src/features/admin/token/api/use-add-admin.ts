@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { InferResponseType, InferRequestType } from "hono";
@@ -9,30 +8,25 @@ import { toast } from "sonner";
 import { errorMessages, sucessMessages } from "@/data/data";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.auth)["register-warranty"]["$post"]
+  (typeof client.api.token)["add-new-admin"]["$post"]
 >;
 type RequestType = InferRequestType<
-  (typeof client.api.auth)["register-warranty"]["$post"]
+  (typeof client.api.token)["add-new-admin"]["$post"]
 >;
 
-export const useRegisterWarranty = () => {
+export const useAddAdmin = ({
+  formSuccessful,
+}: {
+  formSuccessful: () => void;
+}) => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
-      const response = await client.api.auth["register-warranty"]["$post"]({
+      const response = await client.api.token["add-new-admin"]["$post"]({
         json,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error response:", errorData); // Log the error response
-        throw new Error(`Error: ${errorData}`);
-      }
-
-      console.log("response", response);
-
       return await response.json();
     },
     onSuccess: (response) => {
@@ -45,6 +39,7 @@ export const useRegisterWarranty = () => {
         } else {
           toast.success(traductedSucessMessage.fr); //afficher le message de succès personnalisé
         }
+        formSuccessful();
       } else {
         const traductedError = errorMessages.find(
           (item) => item.code === response.message
@@ -54,6 +49,9 @@ export const useRegisterWarranty = () => {
         } else {
           toast.error(traductedError.en); //afficher le message d'erreur personnalisé
         }
+      }
+      if (response.invitationLink) {
+        navigator.clipboard.writeText(response.invitationLink);
       }
       router.refresh();
       queryClient.invalidateQueries({ queryKey: ["current"] });

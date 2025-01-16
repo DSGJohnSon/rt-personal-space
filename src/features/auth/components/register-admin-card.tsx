@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { RegisterAdminSchema } from "../schemas";
-import { Loader } from "lucide-react";
+import { Loader, LucideTriangleAlert } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { redirect, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -62,8 +62,10 @@ const RegisterAdminForm = ({
   //récupérer le token contenu dans l'url sous la forme : url?token=token
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  if (!token) redirect("/");
+  const emailParam = searchParams.get("email");
+  if (!token || !emailParam) redirect("/");
   form.setValue("token", token);
+  form.setValue("email", emailParam);
 
   return (
     <div className="flex flex-col w-full max-w-[480px]">
@@ -91,9 +93,20 @@ const RegisterAdminForm = ({
                 </FormItem>
               )}
             />
+            <div className="bg-brown/5 border border-brown/50 p-4 flex items-center">
+              <LucideTriangleAlert className="mr-2 text-brown size-4" />
+              <div className="flex flex-col">
+                <p className="text-brown text-xs">
+                  This token is unique and can only be used once.
+                </p>
+                <p className="text-brown text-xs">
+                  It has been generated for your mail only.
+                </p>
+              </div>
+            </div>
           </div>
           <div className="space-y-1">
-            <Label className="text-creme">First Name</Label>
+            <Label className="text-creme">Full Name</Label>
             <FormField
               name="name"
               control={form.control}
@@ -125,7 +138,7 @@ const RegisterAdminForm = ({
                       {...field}
                       type="email"
                       placeholder="mail@mail.com"
-                      disabled={isPending}
+                      disabled={true}
                       variant={"rtPrimary"}
                     />
                   </FormControl>

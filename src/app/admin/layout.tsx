@@ -12,9 +12,9 @@ export default async function RootLayout({
 }>) {
   const user = await getCurrent();
   if (!user) redirect("/sign-in");
-  if (user && !user.labels.includes("admin")) {
-    redirect("/");
-  }
+  // if (user && !user.labels.includes("admin")) {
+  //   redirect("/");
+  // }
 
   return (
     <main className="bg-slate-50 flex items-center">

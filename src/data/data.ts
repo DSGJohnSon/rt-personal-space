@@ -1258,6 +1258,12 @@ export const sucessMessages = [
     jp: "登録が成功しました",
   },
   {
+    code: "invite_admin_success",
+    fr: "Lien d'invitation créé avec succès! Il vient d'être copié dans votre presse-papier.",
+    en: "Invitation link successfully created! It has just been copied to your clipboard.",
+    jp: "招待リンクが正常に作成されました！クリップボードにコピーされました。",
+  },
+  {
     code: "link_copied",
     fr: "Lien copié",
     en: "Link copied",
@@ -1315,10 +1321,28 @@ export const errorMessages = [
     jp: "メールアドレスはすでに使用されています！",
   },
   {
+    code: "user_already_exists",
+    fr: "Cet email est déjà utilisé par un admin ou client! Veuillez en utiliser un autre.",
+    en: "This email is already used by an admin or customer! Please use another one.",
+    jp: "このEメールはすでに管理者または顧客によって使用されています！別のものを使用してください。",
+  },
+  {
+    code: "admin_invite_already_exists",
+    fr: "Une invitation administrateur existe déjà pour cet email! Veuillez la supprimer avant de réessayer",
+    en: "An administrator invitation already exists for this email! Please delete it before trying again",
+    jp: "このメールにはすでに管理者招待が存在します！再試行する前に削除してください",
+  },
+  {
     code: "cannot_create_user",
     fr: "Impossible de créer l'utilisateur! Veuillez réeassayer.",
     en: "Cannot create user! Please try again.",
     jp: "ユーザーを作成できません！もう一度やり直してください。",
+  },
+  {
+    code: "cannot_create_admin_invitation",
+    fr: "Impossible de créer l'invitation administrateur! Veuillez réeassayer.",
+    en: "Unable to create administrator invitation! Please try again.",
+    jp: "管理者招待を作成できません！もう一度お試しください。",
   },
   {
     code: "cannot_add_user_to_admin_group",
@@ -1331,5 +1355,11 @@ export const errorMessages = [
     fr: "Impossible de créer une session!",
     en: "Cannot create session!",
     jp: "セッションを作成できません！",
+  },
+  {
+    code: "logout_failed",
+    fr: "Impossible de vous déconnecter, veuillez réessayer!",
+    en: "Unable to disconnect, please try again!",
+    jp: "切断できません。もう一度やり直してください！",
   },
 ];

@@ -36,7 +36,6 @@ export type UserAdmin = {
   updatedAt: Date;
   status: "invited" | "registered" | "banned";
   email: string;
-  token: string;
 };
 
 export const columns: ColumnDef<UserAdmin>[] = [
@@ -142,7 +141,7 @@ export const columns: ColumnDef<UserAdmin>[] = [
     },
   },
   {
-    accessorKey: "token",
+    accessorKey: "id",
     header: ({ column }) => {
       return (
         <div
@@ -154,11 +153,12 @@ export const columns: ColumnDef<UserAdmin>[] = [
       );
     },
     cell: ({ row }) => {
-      const token = row.getValue("token") as string;
+      const id = row.getValue("id") as string;
+      const email = row.getValue("email") as string;
 
       return (
         <div className="flex items-center gap-2">
-          {token}
+          {id}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -167,7 +167,7 @@ export const columns: ColumnDef<UserAdmin>[] = [
                   onClick={() => {
                     navigator.clipboard.writeText(
                       `${process.env
-                        .NEXT_PUBLIC_APP_URL!}/admin-sign-up?token=${token}`
+                        .NEXT_PUBLIC_APP_URL!}/admin-sign-up?token=${id}&email=${email}`
                     );
                     const traductedSucessMessage = sucessMessages.find(
                       (item) => item.code === "link_copied"
@@ -232,7 +232,7 @@ export const columns: ColumnDef<UserAdmin>[] = [
                 onClick={() => {
                   navigator.clipboard.writeText(
                     `${process.env.NEXT_PUBLIC_APP_URL!}/admin-sign-up?token=${
-                      rowFocused.token
+                      rowFocused.id
                     }`
                   );
                   const traductedSucessMessage = sucessMessages.find(
