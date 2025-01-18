@@ -8,24 +8,21 @@ import { toast } from "sonner";
 import { errorMessages, sucessMessages } from "@/data/data";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.token)["add-new-admin"]["$post"]
+  (typeof client.api.token)["ban-token"]["$post"]
 >;
 type RequestType = InferRequestType<
-  (typeof client.api.token)["add-new-admin"]["$post"]
+  (typeof client.api.token)["ban-token"]["$post"]
 >;
 
-export const useAddAdmin = ({
-  formSuccessful,
-}: {
-  formSuccessful: () => void;
-}) => {
+export const useBanAdmin = (token: string) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const tokenToBan = token;
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ json }) => {
-      const response = await client.api.token["add-new-admin"]["$post"]({
-        json,
+    mutationFn: async () => {
+      const response = await client.api.token["ban-token"]["$post"]({
+        json: { token: tokenToBan },
       });
       return await response.json();
     },
@@ -39,7 +36,6 @@ export const useAddAdmin = ({
         } else {
           toast.success(traductedSucessMessage.en); //afficher le message de succès personnalisé
         }
-        formSuccessful();
       } else {
         const traductedError = errorMessages.find(
           (item) => item.code === response.message
@@ -49,9 +45,6 @@ export const useAddAdmin = ({
         } else {
           toast.error(traductedError.en); //afficher le message d'erreur personnalisé
         }
-      }
-      if (response.invitationLink) {
-        navigator.clipboard.writeText(response.invitationLink);
       }
       queryClient.invalidateQueries({ queryKey: ["current-tokens"] });
       router.refresh();

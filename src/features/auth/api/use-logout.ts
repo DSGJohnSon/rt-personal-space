@@ -26,7 +26,7 @@ export const useLogout = () => {
         if (!traductedSucessMessage) {
           toast.success("logout_success"); //afficher le message par défaut
         } else {
-          toast.success(traductedSucessMessage.fr); //afficher le message de succès personnalisé
+          toast.success(traductedSucessMessage.en); //afficher le message de succès personnalisé
         }
       } else {
         const traductedError = errorMessages.find(

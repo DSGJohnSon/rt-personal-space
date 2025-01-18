@@ -27,6 +27,31 @@ type AdditionalContext = {
   };
 };
 
+export const sessionMiddlewareForBanned = createMiddleware<AdditionalContext>(
+  async (c, next) => {
+    const client = new Client()
+      .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+
+    const session = getCookie(c, AUTH_COOKIE);
+
+    if (!session) {
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    client.setSession(session);
+
+    const account = new Account(client);
+
+    const user = await account.get();
+
+    c.set("account", account);
+    c.set("user", user);
+
+    await next();
+  }
+);
+
 export const sessionMiddleware = createMiddleware<AdditionalContext>(
   async (c, next) => {
     const client = new Client()
@@ -46,6 +71,10 @@ export const sessionMiddleware = createMiddleware<AdditionalContext>(
     const storage = new Storage(client);
 
     const user = await account.get();
+
+    if (user.labels.includes('banned')) {
+      return c.json({ success: false, message: "Unauthorized" }, 401);
+    }
 
     c.set("account", account);
     c.set("databases", databases);
@@ -76,7 +105,7 @@ export const sessionAdminMiddleware = createMiddleware<AdditionalContext>(
 
     const user = await account.get();
 
-    if (!user.labels.includes("admin")) {
+    if (!user.labels.includes("admin") || user.labels.includes('banned')) {
       return c.json({ success: false, message: "Unauthorized" }, 401);
     }
 

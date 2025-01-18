@@ -8,15 +8,15 @@ import {
   RegisterWarrantySchema,
 } from "../schemas";
 import { createAdminClient } from "@/lib/appwrite";
-import { ID } from "node-appwrite";
+import { ID, Query } from "node-appwrite";
 import { AUTH_COOKIE } from "../constants";
-import { sessionMiddleware } from "@/lib/session-middleware";
+import { sessionMiddleware, sessionMiddlewareForBanned } from "@/lib/session-middleware";
 import { HTTPException } from "hono/http-exception";
-import { DATABASE_ID, USER_INFO_ID } from "@/config";
+import { ADMIN_INVITE_TOKEN_ID, DATABASE_ID, USER_INFO_ID } from "@/config";
 
 const app = new Hono()
   // Récupération de l'utilisateur actuel
-  .get("/current", sessionMiddleware, async (c) => {
+  .get("/current", sessionMiddlewareForBanned, async (c) => {
     const user = c.get("user");
 
     return c.json({ data: user });
@@ -161,8 +161,25 @@ const app = new Hono()
         const { token, name, email, password } = c.req.valid("json");
         const { users, account, databases } = await createAdminClient();
 
+        const tokenWaited = await databases.listDocuments(
+          DATABASE_ID,
+          ADMIN_INVITE_TOKEN_ID,
+          [Query.equal("email", email)]
+        );
+        //Si pas de token trouvé
+        if (tokenWaited.total === 0) {
+          throw new HTTPException(400, {
+            message: "no_admin_invitation_found",
+          });
+        }
+        //Si le token est banni
+        if (tokenWaited.documents[0].status === "banned") {
+          throw new HTTPException(400, {
+            message: "banned_invitation_token",
+          });
+        }
         // Vérification du token
-        if (token !== "1234") {
+        if (token !== tokenWaited.documents[0].$id) {
           throw new HTTPException(400, { message: "invalid_invitation_token" });
         }
 
@@ -175,6 +192,16 @@ const app = new Hono()
             undefined, // Phone is undefined
             password,
             name
+          );
+
+          //Update du token pour le passer en register
+          await databases.updateDocument(
+            DATABASE_ID,
+            ADMIN_INVITE_TOKEN_ID,
+            tokenWaited.documents[0].$id,
+            {
+              status: "register",
+            }
           );
         } catch (error) {
           switch (error instanceof Error && "code" in error ? error.code : 0) {
@@ -228,7 +255,7 @@ const app = new Hono()
     }
   )
   // Déconnexion
-  .post("/logout", sessionMiddleware, async (c) => {
+  .post("/logout", sessionMiddlewareForBanned, async (c) => {
     const account = c.get("account");
 
     deleteCookie(c, AUTH_COOKIE);

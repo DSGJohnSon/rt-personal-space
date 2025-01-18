@@ -5,6 +5,7 @@ import {
   LucideTag,
   LucideUserRoundCog,
   LucideUsers,
+  LucideWatch,
 } from "lucide-react";
 import { ForwardRefExoticComponent, RefAttributes } from "react";
 import { Country } from "react-phone-number-input";
@@ -1237,6 +1238,12 @@ export const adminPages = [
     zone: "content",
   },
   {
+    label: "Models",
+    icon: LucideWatch,
+    href: "/admin/models",
+    zone: "content",
+  },
+  {
     label: "Clients",
     icon: LucideUsers,
     href: "/admin/clients",
@@ -1276,6 +1283,18 @@ export const sucessMessages = [
     jp: "トークンがコピーされました",
   },
   {
+    code: "token_banned",
+    fr: "Admin/Token banni avec succès!",
+    en: "Admin/Token successfully banned!",
+    jp: "管理者/トークンが正常に禁止されました！",
+  },
+  {
+    code: "token_unbanned",
+    fr: "Admin/Token dé-banni avec succès!",
+    en: "Admin/Token successfully unbanned!",
+    jp: "管理者/トークンが正常に解除されました！",
+  },
+  {
     code: "login_success",
     fr: "Connexion réussie",
     en: "Login successful",
@@ -1307,6 +1326,36 @@ export const errorMessages = [
     fr: "Token d'invitation invalide! Contactez l'administrateur.",
     en: "Invalid invitation token! Contact the administrator.",
     jp: "招待トークンが無効です！管理者に連絡してください。",
+  },
+  {
+    code: "no_admin_invitation_found",
+    fr: "Aucune invitation trouvé pour votre mail! Contactez l'administrateur.",
+    en: "No invitation found for your email! Contact the administrator.",
+    jp: "あなたのメールアドレスに招待状が見つかりません！管理者に連絡してください。",
+  },
+  {
+    code: "banned_invitation_token",
+    fr: "Ce token n'est plus valide ou a été désactivé par l'administrateur!",
+    en: "This token is no longer valid or has been disabled by the administrator!",
+    jp: "このトークンはもはや有効ではないか、管理者によって無効にされています！",
+  },
+  {
+    code: "token_not_found",
+    fr: "Token introuvable!",
+    en: "Token not found!",
+    jp: "トークンが見つかりません！",
+  },
+  {
+    code: "token_already_banned",
+    fr: "Admin/Token déjà banni!",
+    en: "Admin/Token already banned!",
+    jp: "管理者/トークンはすでに禁止されています！",
+  },
+  {
+    code: "token_not_banned",
+    fr: "Ce Admin/Token n'est pas banni!",
+    en: "This Admin/Token is not banned!",
+    jp: "この管理者/トークンは禁止されていません！",
   },
   {
     code: "user_invalid_credentials",

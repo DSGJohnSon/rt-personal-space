@@ -76,7 +76,7 @@ export default function UserButtonSidebar({
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span>{user.name}</span>
+            <span className="truncate">{user.name}</span>
             <span className="text-[0.5rem] text-slate-500">{user.email}</span>
           </div>
         </div>

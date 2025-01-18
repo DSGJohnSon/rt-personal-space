@@ -19,6 +19,8 @@ const badgeVariants = cva(
           "border-transparent bg-amber-400/50 text-amber-700 hover:bg-amber-400/80",
         registered:
           "border-transparent bg-emerald-400/50 text-emerald-700 hover:bg-emerald-400/80",
+        rtPrimary:
+          "border-transparent bg-brown text-dark hover:cursor-default",
       },
     },
     defaultVariants: {

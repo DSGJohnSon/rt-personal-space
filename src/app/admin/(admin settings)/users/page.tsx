@@ -7,15 +7,6 @@ import { getTokens } from "@/features/admin/token/action";
 import { redirect } from "next/navigation";
 
 async function Page() {
-  const data = await getTokens().then(
-    (data) => {
-      return data;
-    },
-    (error) => {
-      console.error("Error fetching tokens:", error);
-      return [];
-    }
-  );
 
   return (
     <>
@@ -23,7 +14,7 @@ async function Page() {
         <div className="flex items-center gap-2 mb-4">
           <AddTokenForm />
         </div>
-        <DataTableTokens columns={columns} data={data} />
+        <DataTableTokens columns={columns} />
       </ScrollArea>
     </>
   );

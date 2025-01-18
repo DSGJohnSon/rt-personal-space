@@ -20,7 +20,6 @@ export const getTokens = async (): Promise<UserAdmin[]> => {
       Query.select(["$id", "$createdAt", "$updatedAt", "status", "email"]),
     ]);
 
-    // Transform the data into the required format
     const formattedTokens: UserAdmin[] = tokens.documents.map((doc) => ({
       id: doc.$id,
       createdAt: new Date(doc.$createdAt),

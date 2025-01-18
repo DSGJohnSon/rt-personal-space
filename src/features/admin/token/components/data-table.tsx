@@ -22,7 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../../../../components/ui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../../../../components/ui/input";
 import {
   DropdownMenu,
@@ -30,17 +30,19 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../../../../components/ui/dropdown-menu";
-import { LucideListTodo } from "lucide-react";
+import { LucideListTodo, LucideLoader } from "lucide-react";
+import { useGetTokens } from "../api/use-get-tokens";
+import { UseQueryResult } from "@tanstack/react-query";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
 }
 
 export function DataTableTokens<TData, TValue>({
   columns,
-  data,
 }: DataTableProps<TData, TValue>) {
+  const dataTokens = useGetTokens();
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -50,8 +52,8 @@ export function DataTableTokens<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
-    columns,
+    data: Array.isArray(dataTokens.data) ? dataTokens.data : [],
+    columns: columns as ColumnDef<unknown, any>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -68,22 +70,40 @@ export function DataTableTokens<TData, TValue>({
     },
     initialState: {
       pagination: {
-        pageSize: 7, // Définit la taille de page initiale à 7
+        pageSize: 7,
       },
     },
   });
 
+  if (dataTokens.isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <LucideLoader className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (dataTokens.isError) {
+    return (
+      <div className="text-center text-red-500">
+        Une erreur est survenue lors du chargement des données.
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="flex items-center pb-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex items-center gap-4 w-full">
+          <Input
+            placeholder="Filter emails..."
+            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("email")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm w-full"
+          />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size={"icon"} className="ml-auto">
@@ -102,7 +122,8 @@ export function DataTableTokens<TData, TValue>({
                     checked={column.getIsVisible()}
                     onCheckedChange={(value) =>
                       column.toggleVisibility(!!value)
-                    }>
+                    }
+                  >
                     {column.id}
                   </DropdownMenuCheckboxItem>
                 );
@@ -135,7 +156,8 @@ export function DataTableTokens<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}>
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -150,7 +172,8 @@ export function DataTableTokens<TData, TValue>({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center">
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -170,14 +193,16 @@ export function DataTableTokens<TData, TValue>({
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}>
+            disabled={!table.getCanPreviousPage()}
+          >
             Previous
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}>
+            disabled={!table.getCanNextPage()}
+          >
             Next
           </Button>
         </div>
